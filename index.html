@@ -35,34 +35,8 @@
     font-family: 'Barlow', sans-serif;
     font-weight: 300;
     overflow-x: hidden;
-    cursor: none;
   }
 
-  /* CUSTOM CURSOR */
-  .cursor {
-    position: fixed; top:0; left:0; pointer-events:none; z-index:9999;
-  }
-  .cursor-dot {
-    width: 6px; height: 6px;
-    background: var(--gold);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s;
-  }
-  .cursor-ring {
-    width: 36px; height: 36px;
-    border: 1px solid rgba(201,168,76,0.5);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: all 0.15s ease;
-    position: absolute; top:0; left:0;
-  }
-  body:has(a:hover) .cursor-ring,
-  body:has(button:hover) .cursor-ring {
-    width: 52px; height: 52px;
-    border-color: var(--gold);
-    background: rgba(201,168,76,0.05);
-  }
 
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 3px; }
