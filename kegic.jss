@@ -231,48 +231,7 @@ function handleEmailSignup() {
 }
 
 
-// ---- CURSOR ----
-const cursorDot = document.getElementById('cursorDot');
-const cursorRing = document.getElementById('cursorRing');
-let mx = window.innerWidth/2, my = window.innerHeight/2;
-let rx = mx, ry = my;
-let cursorVisible = false;
 
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  if (!cursorVisible) {
-    cursorVisible = true;
-    cursorDot.style.opacity = '1';
-    cursorRing.style.opacity = '1';
-  }
-});
-
-document.addEventListener('mouseleave', () => {
-  cursorDot.style.opacity = '0';
-  cursorRing.style.opacity = '0';
-});
-
-// Handle hover state via JS instead of :has() for broader compatibility
-document.addEventListener('mouseover', e => {
-  if (e.target.closest('a, button')) cursorRing.classList.add('hovering');
-});
-document.addEventListener('mouseout', e => {
-  if (e.target.closest('a, button')) cursorRing.classList.remove('hovering');
-});
-
-cursorDot.style.opacity = '0';
-cursorRing.style.opacity = '0';
-
-function animCursor() {
-  cursorDot.style.left = mx + 'px';
-  cursorDot.style.top  = my + 'px';
-  rx += (mx - rx) * 0.15;
-  ry += (my - ry) * 0.15;
-  cursorRing.style.left = rx + 'px';
-  cursorRing.style.top  = ry + 'px';
-  requestAnimationFrame(animCursor);
-}
-animCursor();
 
 // ---- SCROLL NAV ----
 window.addEventListener('scroll', () => {
