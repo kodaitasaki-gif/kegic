@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KEGIC — Deception Perfected.</title>
+<meta name="description" content="Premium magic tricks, marked playing cards, and professional props for magicians who demand the impossible.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --deep: #0d0d0d;
+    --surface: #111111;
+    --card: #161616;
+    --border: #222222;
+    --red: #8b1a1a;
+    --red-bright: #c0392b;
+    --red-glow: rgba(139,26,26,0.3);
+    --gold: #c9a84c;
+    --gold-light: #e8c96d;
+    --gold-dim: rgba(201,168,76,0.2);
+    --white: #f5f0e8;
+    --muted: #888880;
+    --dim: #444440;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed; top:0; left:0; pointer-events:none; z-index:9999;
+  }
+  .cursor-dot {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+    position: absolute; top:0; left:0;
+  }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring {
+    width: 52px; height: 52px;
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.05);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--red); }
+
+  /* NAV */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    display: flex; align-items:center; justify-content:space-between;
+    padding: 24px 60px;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+    transition: all 0.4s;
+  }
+  nav.scrolled {
+    padding: 16px 60px;
+    background: rgba(8,8,8,0.97);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.15em;
+    color: var(--white);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 400;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom:-4px; left:0; right:0; height:1px;
+    background: var(--gold);
+    transform: scaleX(0); transform-origin: right;
+    transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+  .nav-right { display: flex; align-items:center; gap: 24px; }
+  .cart-btn {
+    background: none; border: 1px solid var(--border);
+    color: var(--white); padding: 10px 20px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: none; transition: all 0.3s;
+    position: relative;
+  }
+  .cart-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .cart-count {
+    position: absolute; top:-8px; right:-8px;
+    width:18px; height:18px; background: var(--red);
+    border-radius:50%; font-size:10px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* HERO */
+  .hero {
+    height: 100vh; min-height: 700px;
+    position: relative; display:flex; align-items:center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset:0;
+    background:
+      radial-gradient(ellipse 60% 80% at 65% 50%, rgba(139,26,26,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 60%, rgba(201,168,76,0.06) 0%, transparent 60%),
+      linear-gradient(135deg, #080808 0%, #0f0808 50%, #080808 100%);
+  }
+  .hero-grid {
+    position: absolute; inset:0; opacity:0.04;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-particles {
+    position: absolute; inset:0; pointer-events:none;
+  }
+  .particle {
+    position:absolute; width:2px; height:2px;
+    background: var(--gold);
+    border-radius:50%;
+    animation: float linear infinite;
+    opacity:0;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) translateX(0); opacity:0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-20px) translateX(40px); opacity:0; }
+  }
+
+  /* CARD VISUAL */
+  .hero-card-visual {
+    position: absolute; right: 8%; top: 50%;
+    transform: translateY(-50%);
+    width: 380px; height: 520px;
+  }
+  .card-stack {
+    position: relative; width:100%; height:100%;
+  }
+  .playing-card {
+    position: absolute;
+    width: 220px; height: 310px;
+    background: linear-gradient(135deg, #1a0a0a 0%, #0d0d0d 100%);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px; color: var(--red-bright);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(201,168,76,0.1);
+  }
+  .playing-card:nth-child(1) {
+    top:80px; left:40px;
+    transform: rotate(-15deg);
+    animation: card1 6s ease-in-out infinite;
+    z-index:1;
+  }
+  .playing-card:nth-child(2) {
+    top:40px; left:100px;
+    transform: rotate(-5deg);
+    animation: card2 6s ease-in-out infinite;
+    z-index:2;
+    color: var(--white);
+  }
+  .playing-card:nth-child(3) {
+    top:60px; left:160px;
+    transform: rotate(10deg);
+    animation: card3 6s ease-in-out infinite;
+    z-index:3;
+    color: var(--gold);
+    font-size: 60px;
+    letter-spacing: -2px;
+  }
+  @keyframes card1 { 0%,100%{transform:rotate(-15deg) translateY(0)} 50%{transform:rotate(-18deg) translateY(-8px)} }
+  @keyframes card2 { 0%,100%{transform:rotate(-5deg) translateY(0)} 50%{transform:rotate(-3deg) translateY(-12px)} }
+  @keyframes card3 { 0%,100%{transform:rotate(10deg) translateY(0)} 50%{transform:rotate(13deg) translateY(-6px)} }
+  .card-shine {
+    position:absolute; inset:0; border-radius:12px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.1) 0%, transparent 50%);
+    pointer-events:none;
+  }
+  .card-corner {
+    position:absolute; font-size:18px; font-family:'Cormorant Garamond',serif;
+    font-weight:600;
+  }
+  .card-corner.tl { top:12px; left:14px; }
+  .card-corner.br { bottom:12px; right:14px; transform:rotate(180deg); }
+
+  .hero-content {
+    position:relative; z-index:10;
+    padding: 0 60px;
+    max-width: 600px;
+  }
+  .hero-eyebrow {
+    font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 24px;
+    display: flex; align-items: center; gap: 16px;
+    opacity:0; animation: fadeUp 0.8s 0.3s ease forwards;
+  }
+  .hero-eyebrow::before {
+    content:''; width:40px; height:1px; background:var(--gold);
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 8vw, 120px);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    margin-bottom: 12px;
+    opacity:0; animation: fadeUp 0.8s 0.5s ease forwards;
+  }
+  .hero-title .line2 {
+    color: var(--red-bright);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(56px, 6vw, 88px);
+    letter-spacing: 0.05em;
+  }
+  .hero-sub {
+    font-size: 16px; line-height: 1.7;
+    color: var(--muted); max-width: 420px;
+    margin: 28px 0 48px;
+    opacity:0; animation: fadeUp 0.8s 0.7s ease forwards;
+  }
+  .hero-ctas {
+    display:flex; gap:16px;
+    opacity:0; animation: fadeUp 0.8s 0.9s ease forwards;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    border: none; padding: 16px 40px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 500;
+    cursor: none; text-decoration:none;
+    display: inline-flex; align-items:center; gap:10px;
+    transition: all 0.3s;
+    position: relative; overflow:hidden;
+  }
+  .btn-primary::before {
+    content:''; position:absolute; inset:0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+  .btn-primary:hover { background: var(--red-bright); transform: translateY(-2px); box-shadow: 0 8px 30px var(--red-glow); }
+  .btn-primary:hover::before { transform: translateX(100%); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--dim);
+    padding: 16px 40px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    cursor: none; text-decoration:none;
+    display: inline-flex; align-items:center; gap:10px;
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+  .hero-scroll {
+    position:absolute; bottom:40px; left:60px;
+    display:flex; align-items:center; gap:12px;
+    font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted);
+    opacity:0; animation: fadeUp 1s 1.2s ease forwards;
+  }
+  .scroll-line {
+    width:40px; height:1px; background:var(--dim);
+    position:relative; overflow:hidden;
+  }
+  .scroll-line::after {
+    content:''; position:absolute; top:0; left:0;
+    width:100%; height:100%; background:var(--gold);
+    animation: scanline 2s ease-in-out infinite;
+  }
+  @keyframes scanline { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+
+  /* MARQUEE */
+  .marquee-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow:hidden; padding: 14px 0;
+    background: linear-gradient(90deg, var(--deep), var(--surface), var(--deep));
+  }
+  .marquee-track {
+    display:flex; gap:0; animation: marquee 30s linear infinite; width:max-content;
+  }
+  .marquee-item {
+    display:flex; align-items:center; gap:20px; padding: 0 40px;
+    font-size:11px; letter-spacing:0.25em; text-transform:uppercase;
+    color: var(--muted); white-space:nowrap;
+  }
+  .marquee-dot { width:4px; height:4px; border-radius:50%; background:var(--gold); }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* SECTION COMMONS */
+  section { padding: 100px 60px; }
+  .section-label {
+    font-size:10px; letter-spacing:0.4em; text-transform:uppercase;
+    color: var(--gold); display:flex; align-items:center; gap:16px;
+    margin-bottom:16px;
+  }
+  .section-label::before { content:''; width:30px; height:1px; background:var(--gold); }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 5vw, 64px);
+    letter-spacing: 0.05em; line-height:1;
+    margin-bottom: 48px;
+  }
+  .section-title em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-weight:300;
+    color: var(--red-bright);
+  }
+
+  /* FEATURED PRODUCTS */
+  .featured { background: var(--deep); }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2px;
+  }
+  .product-card {
+    background: var(--card);
+    position:relative; overflow:hidden;
+    cursor: none;
+    transition: transform 0.4s;
+  }
+  .product-card:hover { z-index:2; }
+  .product-img {
+    width:100%; aspect-ratio:4/5;
+    overflow:hidden; position:relative;
+  }
+  .product-img-inner {
+    width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    transition: transform 0.6s ease;
+    position:relative;
+  }
+  .product-card:hover .product-img-inner { transform: scale(1.05); }
+
+  /* Product image placeholders with CSS art */
+  .prod-art {
+    width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:100px;
+    position:relative;
+  }
+  .prod-art-cards {
+    background: radial-gradient(ellipse at center, #1a0808 0%, #080808 100%);
+  }
+  .prod-art-cards::before {
+    content:'🃏'; position:absolute; font-size:90px;
+    transform: rotate(-20deg) translate(-30px, 10px); opacity:0.5;
+  }
+  .prod-art-cards::after {
+    content:'🎴'; position:absolute; font-size:90px;
+    transform: rotate(15deg) translate(30px, -10px); opacity:0.4;
+  }
+  .prod-art-wand {
+    background: radial-gradient(ellipse at center, #0a0a1a 0%, #080808 100%);
+  }
+  .prod-art-wand::before { content:'🪄'; font-size:90px; position:absolute; transform:rotate(-30deg); }
+  .prod-art-hat {
+    background: radial-gradient(ellipse at center, #0d0d0a 0%, #080808 100%);
+  }
+  .prod-art-hat::before { content:'🎩'; font-size:90px; position:absolute; }
+  .prod-art-coin {
+    background: radial-gradient(ellipse at center, #1a1505 0%, #080808 100%);
+  }
+  .prod-art-coin::before { content:'🪙'; font-size:90px; position:absolute; }
+  .prod-art-rope {
+    background: radial-gradient(ellipse at center, #0a1208 0%, #080808 100%);
+  }
+  .prod-art-rope::before { content:'🧵'; font-size:90px; position:absolute; }
+  .prod-art-dice {
+    background: radial-gradient(ellipse at center, #08101a 0%, #080808 100%);
+  }
+  .prod-art-dice::before { content:'🎲'; font-size:90px; position:absolute; }
+  .prod-art-marked {
+    background: radial-gradient(ellipse at center, #1a0808 0%, #050505 100%);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .marked-card-art {
+    width:160px; height:220px;
+    border: 2px solid rgba(201,168,76,0.4);
+    border-radius:10px;
+    background: linear-gradient(135deg, #1a0a0a, #0d0707);
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:space-between;
+    padding:16px;
+    position:relative; overflow:hidden;
+    box-shadow: 0 0 40px rgba(139,26,26,0.3);
+  }
+  .marked-card-art::before {
+    content:''; position:absolute; inset:8px;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius:6px;
+  }
+  .card-suit { font-size:56px; line-height:1; }
+  .card-mark {
+    position:absolute; top:8px; right:8px;
+    width:16px; height:16px; border-radius:50%;
+    background: var(--gold); opacity:0.3;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:0.15;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.2)} }
+
+  .product-badge {
+    position:absolute; top:16px; left:16px;
+    background: var(--red);
+    font-size:9px; letter-spacing:0.2em; text-transform:uppercase;
+    padding: 4px 10px; font-weight:500;
+    z-index:5;
+  }
+  .product-badge.gold { background: var(--gold); color: var(--black); }
+
+  .product-info { padding:24px; }
+  .product-category {
+    font-size:9px; letter-spacing:0.3em; text-transform:uppercase;
+    color: var(--muted); margin-bottom:8px;
+  }
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size:22px; font-weight:400; line-height:1.2;
+    margin-bottom:8px;
+    transition: color 0.3s;
+  }
+  .product-card:hover .product-name { color: var(--gold); }
+  .product-bottom {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top:16px; padding-top:16px;
+    border-top: 1px solid var(--border);
+  }
+  .product-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size:22px; letter-spacing:0.05em;
+    color: var(--white);
+  }
+  .product-price .old { font-size:14px; color:var(--dim); text-decoration:line-through; margin-right:8px; font-family:'Barlow',sans-serif; }
+  .product-diff {
+    display:flex; align-items:center; gap:6px;
+    font-size:10px; letter-spacing:0.1em;
+    color: var(--muted);
+  }
+  .diff-dots { display:flex; gap:3px; }
+  .diff-dot { width:6px; height:6px; border-radius:50%; background:var(--border); }
+  .diff-dot.filled { background:var(--gold); }
+  .add-cart-overlay {
+    position:absolute; inset:0;
+    background: rgba(8,8,8,0.85);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; transition:opacity 0.3s;
+    backdrop-filter: blur(4px);
+  }
+  .product-card:hover .add-cart-overlay { opacity:1; }
+
+  /* BESTSELLERS */
+  .bestsellers { background: var(--black); }
+  .bs-grid {
+    display:grid; grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 2px; margin-top:48px;
+  }
+  .bs-featured {
+    grid-row: span 2;
+    background:var(--card); position:relative; overflow:hidden;
+    cursor:none; min-height:600px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+  }
+  .bs-item {
+    background:var(--card); position:relative; overflow:hidden;
+    cursor:none; min-height:290px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+  }
+  .bs-bg {
+    position:absolute; inset:0;
+    transition: transform 0.6s ease;
+  }
+  .bs-featured:hover .bs-bg,
+  .bs-item:hover .bs-bg { transform: scale(1.05); }
+  .bs-bg-1 {
+    background: radial-gradient(ellipse at 60% 30%, rgba(139,26,26,0.4), transparent 60%),
+                linear-gradient(to bottom, #0d0808, #080808);
+    display:flex; align-items:center; justify-content:center;
+    font-size:200px;
+  }
+  .bs-bg-2 {
+    background: radial-gradient(ellipse at 40% 60%, rgba(201,168,76,0.15), transparent 60%),
+                linear-gradient(to bottom, #0d0d08, #080808);
+    display:flex; align-items:center; justify-content:center;
+    font-size:120px;
+  }
+  .bs-bg-3 {
+    background: radial-gradient(ellipse at 60% 40%, rgba(26,26,139,0.2), transparent 60%),
+                linear-gradient(to bottom, #08080d, #080808);
+    display:flex; align-items:center; justify-content:center;
+    font-size:120px;
+  }
+  .bs-overlay {
+    position:absolute; inset:0;
+    background: linear-gradient(to top, rgba(8,8,8,0.95) 0%, rgba(8,8,8,0.3) 50%, transparent 100%);
+  }
+  .bs-content {
+    position:relative; padding:28px;
+  }
+  .bs-rank {
+    font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:0.3em;
+    color:var(--gold); margin-bottom:8px;
+  }
+  .bs-name {
+    font-family:'Cormorant Garamond',serif; font-size:26px; line-height:1.2;
+    margin-bottom:8px;
+  }
+  .bs-featured .bs-name { font-size:38px; }
+  .bs-price {
+    font-family:'Bebas Neue',sans-serif; font-size:24px;
+    color:var(--gold-light);
+  }
+
+  /* BRAND STORY */
+  .brand-story {
+    background: var(--surface);
+    display:grid; grid-template-columns:1fr 1fr; gap:80px;
+    align-items:center;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .story-visual {
+    position:relative; height:500px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .story-circle {
+    width:320px; height:320px; border-radius:50%;
+    border: 1px solid rgba(201,168,76,0.2);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .story-circle::before {
+    content:''; position:absolute;
+    width:360px; height:360px; border-radius:50%;
+    border: 1px solid rgba(201,168,76,0.08);
+    animation: rotate 20s linear infinite;
+  }
+  .story-circle::after {
+    content:''; position:absolute;
+    width:400px; height:400px; border-radius:50%;
+    border: 1px solid rgba(201,168,76,0.04);
+    animation: rotate 35s linear infinite reverse;
+  }
+  @keyframes rotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .story-inner {
+    font-size:120px; position:relative; z-index:1;
+    filter: drop-shadow(0 0 40px rgba(139,26,26,0.5));
+  }
+  .story-number {
+    position:absolute; right:-40px; top:50%;
+    font-family:'Bebas Neue',sans-serif; font-size:160px;
+    color:rgba(201,168,76,0.04); line-height:1;
+    transform:translateY(-50%);
+    user-select:none;
+  }
+  .story-text p {
+    font-size:16px; line-height:1.8; color:var(--muted);
+    margin-bottom:20px;
+  }
+  .story-text p strong { color:var(--white); font-weight:400; }
+  .story-stats {
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    gap:24px; margin-top:40px; padding-top:40px;
+    border-top:1px solid var(--border);
+  }
+  .stat-num {
+    font-family:'Bebas Neue',sans-serif; font-size:40px;
+    color:var(--gold); letter-spacing:0.05em;
+  }
+  .stat-label { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+
+  /* SHOP PAGE */
+  .shop-section { display:none; }
+  .shop-section.active { display:block; }
+
+  /* EMAIL SIGNUP */
+  .email-signup {
+    background: linear-gradient(135deg, var(--deep), #130808, var(--deep));
+    border-top: 1px solid var(--border);
+    text-align:center; position:relative; overflow:hidden;
+  }
+  .email-signup::before {
+    content:''; position:absolute;
+    top:50%; left:50%; transform:translate(-50%,-50%);
+    width:600px; height:600px;
+    border-radius:50%;
+    background: radial-gradient(ellipse, rgba(139,26,26,0.15), transparent 70%);
+    pointer-events:none;
+  }
+  .email-form {
+    display:flex; gap:0; max-width:480px; margin:32px auto 0;
+    position:relative;
+  }
+  .email-input {
+    flex:1; background:var(--surface);
+    border:1px solid var(--border); border-right:none;
+    color:var(--white); padding:16px 24px;
+    font-family:'Barlow',sans-serif; font-size:14px;
+    outline:none;
+    transition: border-color 0.3s;
+  }
+  .email-input:focus { border-color:var(--red); }
+  .email-input::placeholder { color:var(--dim); }
+  .email-submit {
+    background:var(--red); color:var(--white);
+    border:none; padding:16px 28px;
+    font-family:'Barlow',sans-serif; font-size:11px;
+    letter-spacing:0.2em; text-transform:uppercase; font-weight:500;
+    cursor:none; transition:background 0.3s;
+  }
+  .email-submit:hover { background:var(--red-bright); }
+  .email-perks {
+    display:flex; gap:32px; justify-content:center;
+    margin-top:24px;
+  }
+  .perk {
+    font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+    color:var(--dim); display:flex; align-items:center; gap:8px;
+  }
+  .perk::before { content:'✦'; color:var(--gold); font-size:8px; }
+
+  /* PRODUCT DETAIL PAGE */
+  .product-detail { display:none; padding:120px 60px 80px; }
+  .product-detail.active { display:block; }
+  .pd-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:80px;
+    align-items:start;
+  }
+  .pd-images { position:sticky; top:100px; }
+  .pd-main-img {
+    width:100%; aspect-ratio:4/5;
+    background:var(--card); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:16px; position:relative; overflow:hidden;
+  }
+  .pd-main-img::after {
+    content:''; position:absolute;
+    top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity:0.5;
+  }
+  .pd-thumbs { display:flex; gap:8px; }
+  .pd-thumb {
+    width:80px; height:100px; background:var(--card);
+    border:1px solid var(--border); flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px; cursor:none; transition:border-color 0.3s;
+  }
+  .pd-thumb.active, .pd-thumb:hover { border-color:var(--gold); }
+  .pd-info .section-label { margin-bottom:24px; }
+  .pd-title {
+    font-family:'Cormorant Garamond',serif;
+    font-size:48px; font-weight:400; line-height:1.1;
+    margin-bottom:16px;
+  }
+  .pd-rating { display:flex; align-items:center; gap:12px; margin-bottom:24px; }
+  .stars { color:var(--gold); font-size:14px; letter-spacing:2px; }
+  .rating-count { font-size:12px; color:var(--muted); }
+  .pd-price-row {
+    display:flex; align-items:baseline; gap:16px;
+    margin-bottom:32px;
+  }
+  .pd-price {
+    font-family:'Bebas Neue',sans-serif; font-size:48px;
+    color:var(--gold-light);
+  }
+  .pd-price-old { font-size:20px; color:var(--dim); text-decoration:line-through; }
+  .pd-desc { font-size:15px; line-height:1.8; color:var(--muted); margin-bottom:32px; }
+  .pd-features {
+    list-style:none; margin-bottom:32px;
+    border-top:1px solid var(--border);
+    padding-top:24px;
+  }
+  .pd-features li {
+    display:flex; align-items:flex-start; gap:12px;
+    font-size:13px; padding:10px 0;
+    border-bottom:1px solid rgba(34,34,34,0.5);
+    color:var(--muted);
+  }
+  .pd-features li::before { content:'◆'; color:var(--gold); font-size:8px; margin-top:3px; flex-shrink:0; }
+  .pd-difficulty {
+    margin-bottom:32px; padding:20px;
+    border:1px solid var(--border); background:var(--card);
+  }
+  .diff-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+  .diff-bar { height:4px; background:var(--border); position:relative; margin-top:8px; }
+  .diff-fill { height:100%; background:linear-gradient(90deg, var(--gold), var(--red)); }
+  .diff-text { font-size:12px; color:var(--gold); letter-spacing:0.1em; margin-top:6px; }
+  .pd-video {
+    margin-bottom:32px; background:var(--card);
+    border:1px solid var(--border); aspect-ratio:16/9;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:12px;
+    cursor:none; transition:border-color 0.3s;
+    position:relative; overflow:hidden;
+  }
+  .pd-video:hover { border-color:var(--red); }
+  .pd-video::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at center, rgba(139,26,26,0.1), transparent 60%);
+    opacity:0;
+    transition:opacity 0.3s;
+  }
+  .pd-video:hover::before { opacity:1; }
+  .play-btn {
+    width:64px; height:64px; border-radius:50%;
+    border:2px solid var(--red); background:rgba(139,26,26,0.2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px; transition:all 0.3s;
+    position:relative; z-index:1;
+  }
+  .pd-video:hover .play-btn {
+    background:var(--red); transform:scale(1.1);
+  }
+  .video-label { font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); position:relative; z-index:1; }
+  .pd-add {
+    width:100%; padding:18px;
+    background:var(--red); color:var(--white);
+    border:none; font-family:'Barlow',sans-serif;
+    font-size:12px; letter-spacing:0.25em; text-transform:uppercase; font-weight:500;
+    cursor:none; transition:all 0.3s; margin-bottom:16px;
+  }
+  .pd-add:hover { background:var(--red-bright); box-shadow:0 8px 30px var(--red-glow); }
+  .pd-wishlist {
+    width:100%; padding:18px;
+    background:transparent; color:var(--muted);
+    border:1px solid var(--border);
+    font-family:'Barlow',sans-serif;
+    font-size:12px; letter-spacing:0.25em; text-transform:uppercase;
+    cursor:none; transition:all 0.3s;
+  }
+  .pd-wishlist:hover { border-color:var(--gold); color:var(--gold); }
+  .pd-reviews { margin-top:60px; }
+  .review-card {
+    background:var(--card); border:1px solid var(--border);
+    padding:24px; margin-bottom:16px;
+  }
+  .review-header { display:flex; align-items:center; gap:16px; margin-bottom:12px; }
+  .reviewer-avatar {
+    width:40px; height:40px; border-radius:50%;
+    background:linear-gradient(135deg, var(--red), #4a0808);
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; font-family:'Cormorant Garamond',serif;
+  }
+  .reviewer-name { font-size:14px; font-weight:500; }
+  .reviewer-date { font-size:11px; color:var(--muted); margin-top:2px; }
+  .review-text { font-size:14px; line-height:1.7; color:var(--muted); }
+  .review-verified { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-left:auto; }
+
+  /* SHOP FILTERS */
+  .shop-header {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:40px;
+  }
+  .filter-tags { display:flex; gap:8px; flex-wrap:wrap; }
+  .filter-tag {
+    padding:8px 20px; border:1px solid var(--border);
+    font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
+    color:var(--muted); background:none; cursor:none;
+    transition:all 0.3s;
+  }
+  .filter-tag.active, .filter-tag:hover {
+    border-color:var(--red); color:var(--white); background:rgba(139,26,26,0.1);
+  }
+  .shop-count { font-size:12px; color:var(--muted); }
+
+  /* PAGES */
+  .page { display:none; min-height:100vh; }
+  .page.active { display:block; }
+  #page-home { display:block; }
+
+  /* ABOUT */
+  .about-hero {
+    height:50vh; display:flex; align-items:center; justify-content:center;
+    text-align:center; position:relative; overflow:hidden;
+    background: radial-gradient(ellipse at center, rgba(139,26,26,0.2), transparent 70%),
+                var(--black);
+  }
+  .timeline {
+    max-width:700px; margin:0 auto;
+    position:relative; padding:40px 0;
+  }
+  .timeline::before {
+    content:''; position:absolute; left:50%; top:0; bottom:0;
+    width:1px; background:linear-gradient(to bottom, transparent, var(--border) 20%, var(--border) 80%, transparent);
+    transform:translateX(-50%);
+  }
+  .tl-item {
+    display:flex; align-items:flex-start; gap:24px;
+    margin-bottom:48px; position:relative;
+  }
+  .tl-item:nth-child(odd) { flex-direction:row-reverse; text-align:right; }
+  .tl-dot {
+    width:12px; height:12px; border-radius:50%;
+    background:var(--red); flex-shrink:0;
+    margin-top:4px; position:relative; z-index:1;
+    box-shadow: 0 0 20px rgba(139,26,26,0.5);
+  }
+  .tl-year { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--gold); }
+  .tl-desc { font-size:14px; color:var(--muted); line-height:1.6; }
+
+  /* LEARN */
+  .articles-grid {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:2px;
+  }
+  .article-card {
+    background:var(--card); overflow:hidden; cursor:none;
+  }
+  .article-img {
+    aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+    font-size:60px;
+    transition:transform 0.5s;
+    overflow:hidden;
+  }
+  .article-card:hover .article-img { transform:scale(1.05); }
+  .article-body { padding:24px; }
+  .article-tag {
+    font-size:9px; letter-spacing:0.3em; text-transform:uppercase;
+    color:var(--red-bright); margin-bottom:12px;
+  }
+  .article-title {
+    font-family:'Cormorant Garamond',serif; font-size:22px; line-height:1.3;
+    margin-bottom:12px;
+  }
+  .article-excerpt { font-size:13px; color:var(--muted); line-height:1.6; }
+
+  /* FAQ */
+  .faq-item {
+    border-bottom:1px solid var(--border);
+  }
+  .faq-q {
+    width:100%; text-align:left; background:none; border:none;
+    color:var(--white); padding:24px 0;
+    font-family:'Barlow',sans-serif; font-size:16px; font-weight:400;
+    display:flex; align-items:center; justify-content:space-between;
+    cursor:none; gap:16px;
+  }
+  .faq-icon { color:var(--gold); font-size:20px; flex-shrink:0; transition:transform 0.3s; }
+  .faq-item.open .faq-icon { transform:rotate(45deg); }
+  .faq-a {
+    font-size:14px; line-height:1.8; color:var(--muted);
+    max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.3s;
+  }
+  .faq-item.open .faq-a { max-height:200px; padding-bottom:24px; }
+
+  /* CART SIDEBAR */
+  .cart-sidebar {
+    position:fixed; top:0; right:-440px; bottom:0; width:420px;
+    background:var(--deep); border-left:1px solid var(--border);
+    z-index:200; transition:right 0.4s ease;
+    display:flex; flex-direction:column;
+    box-shadow: -20px 0 60px rgba(0,0,0,0.5);
+  }
+  .cart-sidebar.open { right:0; }
+  .cart-sidebar-header {
+    padding:24px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .cart-sidebar-title {
+    font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.1em;
+  }
+  .cart-close {
+    background:none; border:none; color:var(--muted);
+    font-size:24px; cursor:none; transition:color 0.3s;
+  }
+  .cart-close:hover { color:var(--white); }
+  .cart-items { flex:1; overflow-y:auto; padding:24px; }
+  .cart-item {
+    display:flex; gap:16px; padding:16px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .cart-item-img {
+    width:72px; height:96px; background:var(--card);
+    display:flex; align-items:center; justify-content:center;
+    font-size:32px; flex-shrink:0; border:1px solid var(--border);
+  }
+  .cart-item-info { flex:1; }
+  .cart-item-name { font-family:'Cormorant Garamond',serif; font-size:18px; margin-bottom:4px; }
+  .cart-item-price { font-size:13px; color:var(--gold); }
+  .cart-item-qty { display:flex; align-items:center; gap:12px; margin-top:10px; }
+  .qty-btn {
+    width:28px; height:28px; background:var(--border); border:none;
+    color:var(--white); font-size:16px; cursor:none; transition:background 0.2s;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .qty-btn:hover { background:var(--red); }
+  .qty-num { font-size:14px; min-width:24px; text-align:center; }
+  .cart-footer {
+    padding:24px; border-top:1px solid var(--border);
+  }
+  .cart-total-row {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:20px;
+  }
+  .cart-total-label { font-size:12px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); }
+  .cart-total-amount { font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--gold-light); }
+  .checkout-btn {
+    width:100%; padding:18px; background:var(--red); color:var(--white);
+    border:none; font-family:'Barlow',sans-serif;
+    font-size:12px; letter-spacing:0.25em; text-transform:uppercase; font-weight:500;
+    cursor:none; transition:all 0.3s; margin-bottom:12px;
+  }
+  .checkout-btn:hover { background:var(--red-bright); box-shadow:0 8px 30px var(--red-glow); }
+
+  /* OVERLAY */
+  .overlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+    z-index:150; opacity:0; pointer-events:none; transition:opacity 0.4s;
+  }
+  .overlay.active { opacity:1; pointer-events:all; }
+
+  /* FOOTER */
+  footer {
+    background:var(--deep); border-top:1px solid var(--border);
+    padding:60px 60px 40px;
+  }
+  .footer-grid {
+    display:grid; grid-template-columns:2fr 1fr 1fr 1fr;
+    gap:60px; margin-bottom:60px;
+  }
+  .footer-brand-name {
+    font-family:'Bebas Neue',sans-serif; font-size:36px;
+    letter-spacing:0.1em; margin-bottom:16px;
+  }
+  .footer-brand-name span { color:var(--gold); }
+  .footer-tagline { font-size:13px; color:var(--muted); line-height:1.6; max-width:260px; }
+  .footer-col-title {
+    font-size:10px; letter-spacing:0.3em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:20px;
+  }
+  .footer-links { list-style:none; }
+  .footer-links li { margin-bottom:12px; }
+  .footer-links a {
+    color:var(--muted); text-decoration:none; font-size:13px;
+    transition:color 0.3s;
+  }
+  .footer-links a:hover { color:var(--white); }
+  .footer-bottom {
+    border-top:1px solid var(--border); padding-top:28px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .footer-copy { font-size:11px; color:var(--dim); }
+  .footer-legal { display:flex; gap:24px; }
+  .footer-legal a { font-size:11px; color:var(--dim); text-decoration:none; }
+  .footer-legal a:hover { color:var(--muted); }
+
+  /* CONTACT FORM */
+  .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:60px; }
+  .form-group { margin-bottom:20px; }
+  .form-label {
+    display:block; font-size:10px; letter-spacing:0.25em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:8px;
+  }
+  .form-input {
+    width:100%; background:var(--card); border:1px solid var(--border);
+    color:var(--white); padding:14px 18px;
+    font-family:'Barlow',sans-serif; font-size:14px; font-weight:300;
+    outline:none; transition:border-color 0.3s;
+    -webkit-appearance:none;
+  }
+  .form-input:focus { border-color:var(--red); }
+  textarea.form-input { resize:vertical; min-height:120px; }
+  .contact-info-item {
+    display:flex; align-items:flex-start; gap:16px; margin-bottom:24px;
+  }
+  .contact-icon { font-size:20px; flex-shrink:0; margin-top:2px; }
+  .contact-info-label { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:4px; }
+  .contact-info-val { font-size:14px; color:var(--muted); }
+
+  /* TOAST */
+  .toast {
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(60px);
+    background:var(--card); border:1px solid var(--border);
+    padding:14px 28px; font-size:13px; letter-spacing:0.05em;
+    z-index:300; transition:transform 0.4s, opacity 0.4s;
+    opacity:0; box-shadow:0 8px 40px rgba(0,0,0,0.6);
+    display:flex; align-items:center; gap:12px;
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+  .toast-icon { color:var(--gold); }
+
+  /* PAGE TRANSITIONS */
+  .page-enter { animation: pageIn 0.5s ease forwards; }
+  @keyframes pageIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+  /* RESPONSIVE */
+  @media(max-width:1024px) {
+    nav { padding:20px 30px; }
+    section { padding:70px 30px; }
+    .hero-content { padding:0 30px; }
+    .bs-grid { grid-template-columns:1fr 1fr; }
+    .bs-featured { grid-column:span 2; }
+    .brand-story { grid-template-columns:1fr; gap:40px; }
+    .footer-grid { grid-template-columns:1fr 1fr; gap:40px; }
+    .pd-grid { grid-template-columns:1fr; }
+    .pd-images { position:static; }
+    .articles-grid { grid-template-columns:1fr 1fr; }
+    .contact-grid { grid-template-columns:1fr; }
+    .hero-card-visual { display:none; }
+  }
+  @media(max-width:768px) {
+    nav { padding:16px 20px; }
+    nav.scrolled { padding:12px 20px; }
+    .nav-links { display:none; }
+    section { padding:60px 20px; }
+    .hero-content { padding:0 20px; }
+    .bs-grid { grid-template-columns:1fr; }
+    .bs-featured { grid-column:span 1; }
+    .product-grid { grid-template-columns:1fr 1fr; gap:2px; }
+    .footer-grid { grid-template-columns:1fr 1fr; }
+    .articles-grid { grid-template-columns:1fr; }
+    footer { padding:40px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor">
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-sidebar-header">
+    <div class="cart-sidebar-title">YOUR ARSENAL</div>
+    <button class="cart-close" onclick="closeCart()">×</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <!-- populated by JS -->
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-amount" id="cartTotal">$0</span>
+    </div>
+    <button class="checkout-btn" onclick="showToast('🔒 Redirecting to secure checkout...')">Secure Checkout</button>
+    <button class="btn-ghost" style="width:100%;justify-content:center;" onclick="closeCart()">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✦</span>
+  <span id="toastMsg"></span>
+</div>
+
+<!-- NAVIGATION -->
+<nav id="mainNav">
+  <a class="nav-logo" href="#" onclick="showPage('home')">K<span>E</span>GIC</a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')">Home</a></li>
+    <li><a href="#" onclick="showPage('shop')">Shop</a></li>
+    <li><a href="#" onclick="showPage('learn')">Learn Magic</a></li>
+    <li><a href="#" onclick="showPage('about')">About</a></li>
+    <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+    <li><a href="#" onclick="showPage('faq')">FAQ</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="openCart()">
+      Cart
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- =========== HOME PAGE =========== -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero" style="padding:0;">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-particles" id="particles"></div>
+
+    <!-- Card Visual -->
+    <div class="hero-card-visual">
+      <div class="card-stack">
+        <div class="playing-card" style="background:linear-gradient(135deg,#1a0808,#0d0505);">
+          <div class="card-shine"></div>
+          <div class="card-corner tl" style="color:#c0392b;">A<br>♠</div>
+          <div class="card-corner br" style="color:#c0392b;">A<br>♠</div>
+          ♠
+        </div>
+        <div class="playing-card" style="background:linear-gradient(135deg,#0d0d0d,#080808);">
+          <div class="card-shine"></div>
+          <div class="card-corner tl" style="color:#f5f0e8;">K<br>♥</div>
+          <div class="card-corner br" style="color:#f5f0e8;">K<br>♥</div>
+          <span style="color:#c0392b">♥</span>
+        </div>
+        <div class="playing-card" style="background:linear-gradient(135deg,#1a1505,#0d0d08);">
+          <div class="card-shine"></div>
+          <div class="card-corner tl" style="color:#c9a84c;font-family:'Bebas Neue';letter-spacing:0">KEGIC</div>
+          <div style="font-size:14px;font-family:'Cormorant Garamond',serif;font-style:italic;color:#c9a84c;text-align:center;letter-spacing:0.05em">Marked<br>Edition</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">Premium Magic Since 2019</div>
+      <h1 class="hero-title">
+        DECEPTION<br>
+        <span class="line2">Perfected.</span>
+      </h1>
+      <p class="hero-sub">Professional-grade magic tools engineered for those who refuse to be ordinary. From invisible marked decks to handcrafted gimmicks — we arm the impossible.</p>
+      <div class="hero-ctas">
+        <a href="#" class="btn-primary" onclick="showPage('shop')">Shop the Collection ▶</a>
+        <a href="#" class="btn-ghost" onclick="showPage('learn')">Learn Magic</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-bar">
+    <div class="marquee-track" id="marqueeTrack">
+    </div>
+  </div>
+
+  <!-- FEATURED PRODUCTS -->
+  <section class="featured">
+    <div class="section-label">Featured Collection</div>
+    <h2 class="section-title">Master Your <em>Craft</em></h2>
+    <div class="product-grid" id="featuredGrid"></div>
+  </section>
+
+  <!-- BESTSELLERS -->
+  <section class="bestsellers">
+    <div class="section-label">Best Sellers</div>
+    <h2 class="section-title">The <em>Essentials</em></h2>
+    <div class="bs-grid">
+      <div class="bs-featured" onclick="showProductDetail('marked-cards')">
+        <div class="bs-bg bs-bg-1">
+          <div class="marked-card-art" style="transform:scale(1.4)">
+            <div class="card-mark"></div>
+            <span class="card-suit" style="color:#c0392b">♠</span>
+            <div style="width:100%;height:1px;background:rgba(201,168,76,0.2)"></div>
+            <span class="card-suit" style="font-size:28px;color:rgba(201,168,76,0.4)">KEGIC</span>
+          </div>
+        </div>
+        <div class="bs-overlay"></div>
+        <div class="bs-content">
+          <div class="bs-rank">★ #1 Best Seller</div>
+          <div class="bs-name">Premium Marked Playing Cards</div>
+          <div class="bs-price">$34.99</div>
+        </div>
+      </div>
+      <div class="bs-item" onclick="showPage('shop')">
+        <div class="bs-bg bs-bg-2">🪄</div>
+        <div class="bs-overlay"></div>
+        <div class="bs-content">
+          <div class="bs-rank">★ #2</div>
+          <div class="bs-name">Invisible Thread Reel</div>
+          <div class="bs-price">$24.99</div>
+        </div>
+      </div>
+      <div class="bs-item" onclick="showPage('shop')">
+        <div class="bs-bg bs-bg-3">🎩</div>
+        <div class="bs-overlay"></div>
+        <div class="bs-content">
+          <div class="bs-rank">★ #3</div>
+          <div class="bs-name">Pro Manipulation Coins</div>
+          <div class="bs-price">$49.99</div>
+        </div>
+      </div>
+      <div class="bs-item" onclick="showPage('shop')">
+        <div class="bs-bg" style="background:radial-gradient(ellipse at 60% 40%, rgba(139,100,26,0.25),transparent 60%), linear-gradient(to bottom,#0d0d08,#080808);display:flex;align-items:center;justify-content:center;font-size:120px">🃏</div>
+        <div class="bs-overlay"></div>
+        <div class="bs-content">
+          <div class="bs-rank">★ #4</div>
+          <div class="bs-name">Rising Card Gimmick</div>
+          <div class="bs-price">$39.99</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRAND STORY -->
+  <section class="brand-story">
+    <div class="story-visual">
+      <div class="story-circle">
+        <div class="story-inner">🎩</div>
+      </div>
+      <div class="story-number">K</div>
+    </div>
+    <div class="story-text">
+      <div class="section-label">Our Story</div>
+      <h2 class="section-title" style="margin-bottom:24px">Built By <em>Magicians</em></h2>
+      <p>
+        <strong>KEGIC was born from frustration.</strong> We were performing professionals tired of props that failed at the worst moment — cheap decks, gimmicks that broke after one show, marked cards readable from across the room.
+      </p>
+      <p>
+        So we built our own. Every product in our catalog is <strong>field-tested by working professionals</strong> before it reaches you. Our marked card system uses a proprietary micro-print technology invisible to audiences but crystal clear to trained eyes.
+      </p>
+      <p>
+        Whether you're performing on a Las Vegas stage or wowing your first birthday party, <strong>KEGIC gives you the tools to create genuine impossibility.</strong>
+      </p>
+      <div class="story-stats">
+        <div>
+          <div class="stat-num">40K+</div>
+          <div class="stat-label">Magicians Served</div>
+        </div>
+        <div>
+          <div class="stat-num">180+</div>
+          <div class="stat-label">Products</div>
+        </div>
+        <div>
+          <div class="stat-num">6 YRS</div>
+          <div class="stat-label">Of Deception</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMAIL SIGNUP -->
+  <section class="email-signup">
+    <div class="section-label" style="justify-content:center">Inner Circle</div>
+    <h2 class="section-title" style="text-align:center;margin-bottom:8px">Secrets <em>Await</em></h2>
+    <p style="color:var(--muted);font-size:15px;max-width:440px;margin:0 auto;text-align:center;line-height:1.7">
+      Join 40,000+ magicians. Get exclusive tricks, early access to new props, and members-only discounts delivered monthly.
+    </p>
+    <div class="email-form">
+      <input type="email" class="email-input" placeholder="your@email.com" id="emailInput">
+      <button class="email-submit" onclick="handleEmailSignup()">Join</button>
+    </div>
+    <div class="email-perks">
+      <div class="perk">Free Tutorial PDF</div>
+      <div class="perk">10% First Order</div>
+      <div class="perk">No Spam, Ever</div>
+    </div>
+  </section>
+
+</div><!-- end home page -->
+
+<!-- =========== SHOP PAGE =========== -->
+<div class="page" id="page-shop" style="padding-top:80px;">
+  <section style="padding:60px 60px 80px;">
+    <div class="section-label">The Collection</div>
+    <h1 class="section-title">Shop <em>Everything</em></h1>
+    <div class="shop-header">
+      <div class="filter-tags" id="filterTags">
+        <button class="filter-tag active" onclick="filterProducts('all',this)">All Products</button>
+        <button class="filter-tag" onclick="filterProducts('marked',this)">Marked Cards</button>
+        <button class="filter-tag" onclick="filterProducts('card',this)">Card Magic</button>
+        <button class="filter-tag" onclick="filterProducts('beginner',this)">Beginner Tricks</button>
+        <button class="filter-tag" onclick="filterProducts('professional',this)">Professional Props</button>
+        <button class="filter-tag" onclick="filterProducts('accessories',this)">Accessories</button>
+      </div>
+      <div class="shop-count" id="shopCount">18 products</div>
+    </div>
+    <div class="product-grid" id="shopGrid"></div>
+  </section>
+</div>
+
+<!-- =========== PRODUCT DETAIL =========== -->
+<div class="page" id="page-product">
+  <div class="product-detail active" style="display:block;padding:120px 60px 80px;">
+    <div style="margin-bottom:16px;">
+      <a href="#" onclick="showPage('shop')" style="color:var(--muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:color 0.3s" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--muted)'">← Back to Shop</a>
+    </div>
+    <div class="pd-grid">
+      <div class="pd-images">
+        <div class="pd-main-img" id="pdMainImg">
+          <div class="marked-card-art" style="transform:scale(1.8)">
+            <div class="card-mark"></div>
+            <span class="card-suit" style="color:#c0392b">♠</span>
+            <div style="width:100%;height:1px;background:rgba(201,168,76,0.2)"></div>
+            <span style="font-size:14px;font-family:'Cormorant Garamond',serif;font-style:italic;color:#c9a84c">KEGIC</span>
+          </div>
+        </div>
+        <div class="pd-thumbs">
+          <div class="pd-thumb active">♠</div>
+          <div class="pd-thumb">♥</div>
+          <div class="pd-thumb">♦</div>
+          <div class="pd-thumb">🃏</div>
+        </div>
+      </div>
+      <div class="pd-info">
+        <div class="section-label">Marked Cards</div>
+        <h1 class="pd-title">Premium Marked Playing Cards</h1>
+        <div class="pd-rating">
+          <span class="stars">★★★★★</span>
+          <span class="rating-count">4.9 · 247 reviews</span>
+          <span style="color:var(--gold);font-size:11px;letter-spacing:0.15em;margin-left:auto">✦ Best Seller</span>
+        </div>
+        <div class="pd-price-row">
+          <span class="pd-price">$34.99</span>
+          <span class="pd-price-old">$49.99</span>
+        </div>
+        <p class="pd-desc">
+          The KEGIC Marked Deck uses our proprietary micro-print system — invisible to audiences under any lighting, but instantly readable to you from any angle. Each card features subtle edge markings encoding suit and value in three locations for redundancy.
+        </p>
+        <ul class="pd-features">
+          <li>Proprietary micro-print system — invisible under stage, UV, and natural light</li>
+          <li>Casino-grade card stock with air-cushion finish for smooth handling</li>
+          <li>Triple-redundant marking system: corner, back center, and edge</li>
+          <li>Compatible with standard card sleeves and cases</li>
+          <li>Includes printed decoder card and training guide PDF</li>
+          <li>Available in Red & Blue bicycle-back design</li>
+          <li>Passes inspection by non-magicians with ease</li>
+        </ul>
+        <div class="pd-difficulty">
+          <div class="diff-label">Difficulty Level</div>
+          <div style="font-size:11px;color:var(--muted)">All levels — markings do the work</div>
+          <div class="diff-bar"><div class="diff-fill" style="width:20%"></div></div>
+          <div class="diff-text">Beginner Friendly</div>
+        </div>
+        <div class="pd-video" onclick="showToast('▶ Demo video would play here')">
+          <div class="play-btn">▶</div>
+          <div class="video-label">Watch Performance Demo</div>
+        </div>
+        <button class="pd-add" onclick="addToCart('Premium Marked Playing Cards','$34.99','♠')">Add to Cart — $34.99</button>
+        <button class="pd-wishlist">+ Save to Wishlist</button>
+
+        <!-- REVIEWS -->
+        <div class="pd-reviews">
+          <div class="section-label" style="margin-bottom:24px">Customer Reviews</div>
+          <div class="review-card">
+            <div class="review-header">
+              <div class="reviewer-avatar">M</div>
+              <div>
+                <div class="reviewer-name">Marcus T.</div>
+                <div class="reviewer-date">February 2026</div>
+              </div>
+              <span class="review-verified">✓ Verified Purchase</span>
+            </div>
+            <div class="stars" style="margin-bottom:10px;font-size:12px">★★★★★</div>
+            <div class="review-text">Performed with these at a corporate gig last month. A spectator grabbed the deck to examine it and handed it back saying it looked completely normal. That's the level of quality we're talking about. Absolutely flawless.</div>
+          </div>
+          <div class="review-card">
+            <div class="review-header">
+              <div class="reviewer-avatar" style="background:linear-gradient(135deg,#1a0a4a,#0a0826)">S</div>
+              <div>
+                <div class="reviewer-name">Sophia R.</div>
+                <div class="reviewer-date">January 2026</div>
+              </div>
+              <span class="review-verified">✓ Verified Purchase</span>
+            </div>
+            <div class="stars" style="margin-bottom:10px;font-size:12px">★★★★★</div>
+            <div class="review-text">I've tried 6 different marked decks over the years. KEGIC's micro-print system is genuinely in another class. The markings are easy to read once you know the system, and I've never once had an audience member even come close to spotting them.</div>
+          </div>
+          <div class="review-card">
+            <div class="review-header">
+              <div class="reviewer-avatar" style="background:linear-gradient(135deg,#0a2a0a,#081408)">D</div>
+              <div>
+                <div class="reviewer-name">Daniel K.</div>
+                <div class="reviewer-date">December 2025</div>
+              </div>
+              <span class="review-verified">✓ Verified Purchase</span>
+            </div>
+            <div class="stars" style="margin-bottom:10px;font-size:12px">★★★★☆</div>
+            <div class="review-text">Great deck, the markings are super subtle which I appreciate. Took me a couple hours to get comfortable reading them quickly during performance, but now it's second nature. Would recommend the training guide they include.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========== ABOUT PAGE =========== -->
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <div>
+      <div class="section-label" style="justify-content:center;margin-bottom:16px">Our Story</div>
+      <h1 class="hero-title" style="text-align:center;font-size:clamp(60px,7vw,100px)">THE ART OF<br><span class="line2">Impossible</span></h1>
+    </div>
+  </div>
+  <section>
+    <div style="max-width:700px;margin:0 auto;text-align:center;margin-bottom:60px;">
+      <p style="font-size:18px;line-height:1.8;color:var(--muted)">
+        KEGIC was founded in 2019 by a team of working professional magicians who believed the industry deserved better tools. We obsess over every detail — from card stock weight to gimmick tolerances measured in fractions of a millimeter.
+      </p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">2019</div>
+          <div class="tl-desc">KEGIC founded in Chicago. First product: our signature marked deck, handmade in batches of 100.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">2020</div>
+          <div class="tl-desc">Expanded to coin magic. Our Palmed Quarters sold out in 48 hours on launch day.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">2022</div>
+          <div class="tl-desc">Reached 10,000 customers. Launched the KEGIC Academy — free tutorials for our community.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div>
+          <div class="tl-year">2024</div>
+          <div class="tl-desc">Opened our first physical studio. Products now available in 40+ countries.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--gold);box-shadow:0 0 20px rgba(201,168,76,0.5)"></div>
+        <div>
+          <div class="tl-year" style="color:var(--gold)">Today</div>
+          <div class="tl-desc">40,000+ magicians worldwide. Over 180 products. Still obsessing over every detail.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- =========== LEARN PAGE =========== -->
+<div class="page" id="page-learn">
+  <section style="padding-top:120px;">
+    <div class="section-label">KEGIC Academy</div>
+    <h1 class="section-title">Learn <em>Magic</em></h1>
+    <div class="articles-grid">
+      <div class="article-card">
+        <div class="article-img" style="background:radial-gradient(ellipse at center,rgba(139,26,26,0.3),#080808)">🃏</div>
+        <div class="article-body">
+          <div class="article-tag">Card Magic · Beginner</div>
+          <div class="article-title">5 Card Forces Every Magician Must Know</div>
+          <div class="article-excerpt">Master the foundational techniques for controlling what card a spectator selects — the backbone of professional card magic.</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-img" style="background:radial-gradient(ellipse at center,rgba(201,168,76,0.15),#080808)">🪙</div>
+        <div class="article-body">
+          <div class="article-tag">Coin Magic · Intermediate</div>
+          <div class="article-title">Reading Your Marked Deck at Performance Speed</div>
+          <div class="article-excerpt">A systematic approach to training your eye to instantly recognize markings in real performance conditions.</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-img" style="background:radial-gradient(ellipse at center,rgba(26,26,139,0.2),#080808)">🎩</div>
+        <div class="article-body">
+          <div class="article-tag">Stage Magic · Advanced</div>
+          <div class="article-title">Engineering Impossible Moments: A Framework</div>
+          <div class="article-excerpt">How professional magicians structure their routines to build maximum psychological impact before the final revelation.</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-img" style="background:radial-gradient(ellipse at center,rgba(50,139,26,0.15),#080808)">🧵</div>
+        <div class="article-body">
+          <div class="article-tag">Gimmicks · Intermediate</div>
+          <div class="article-title">Invisible Thread: The Complete Beginner's Guide</div>
+          <div class="article-excerpt">Everything you need to know to set up, handle, and perform with invisible thread without breaking it or getting caught.</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-img" style="background:radial-gradient(ellipse at center,rgba(139,100,26,0.2),#080808)">🎴</div>
+        <div class="article-body">
+          <div class="article-tag">Psychology · All Levels</div>
+          <div class="article-title">Misdirection: The Real Secret Behind Every Trick</div>
+          <div class="article-excerpt">Technical skill is only 30% of magic. Understanding how to direct attention is what separates good magicians from great ones.</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-img" style="background:radial-gradient(ellipse at center,rgba(139,26,80,0.2),#080808)">🪄</div>
+        <div class="article-body">
+          <div class="article-tag">Performance · Intermediate</div>
+          <div class="article-title">Building Your First 10-Minute Close-Up Set</div>
+          <div class="article-excerpt">How to select, sequence, and structure a complete routine that takes spectators on an emotional journey they won't forget.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- =========== CONTACT PAGE =========== -->
+<div class="page" id="page-contact">
+  <section style="padding-top:120px;">
+    <div class="section-label">Reach Out</div>
+    <h1 class="section-title">Get In <em>Touch</em></h1>
+    <div class="contact-grid">
+      <div>
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" class="form-input" placeholder="The Great Mysterio">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="you@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <input type="text" class="form-input" placeholder="Product inquiry, order issue...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-input" placeholder="Tell us what you need..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="showToast('✓ Message sent! We\'ll reply within 24hrs.')">Send Message</button>
+      </div>
+      <div>
+        <div style="margin-bottom:40px;">
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:24px;">We respond within 24 hours.</h3>
+          <p style="color:var(--muted);font-size:14px;line-height:1.7">For order issues, please include your order number. For product questions, our team includes working professional magicians who can give you real performance advice.</p>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">✉</div>
+          <div>
+            <div class="contact-info-label">Email</div>
+            <div class="contact-info-val">support@kegic.com</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">⏰</div>
+          <div>
+            <div class="contact-info-label">Support Hours</div>
+            <div class="contact-info-val">Mon–Fri, 9am–6pm CST</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">📦</div>
+          <div>
+            <div class="contact-info-label">Orders Ship Within</div>
+            <div class="contact-info-val">1–2 business days</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">🔒</div>
+          <div>
+            <div class="contact-info-label">Secure Checkout</div>
+            <div class="contact-info-val">256-bit SSL encryption on all orders</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- =========== FAQ PAGE =========== -->
+<div class="page" id="page-faq">
+  <section style="padding-top:120px;">
+    <div class="section-label">Common Questions</div>
+    <h1 class="section-title">FAQ</h1>
+    <div style="max-width:760px;" id="faqList"></div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">K<span>E</span>GIC</div>
+      <div class="footer-tagline">Professional magic tools for those who refuse to be ordinary. Built by magicians, for magicians.</div>
+    </div>
+    <div>
+      <div class="footer-col-title">Shop</div>
+      <ul class="footer-links">
+        <li><a href="#" onclick="showPage('shop')">All Products</a></li>
+        <li><a href="#" onclick="filterAndGo('marked')">Marked Cards</a></li>
+        <li><a href="#" onclick="filterAndGo('card')">Card Magic</a></li>
+        <li><a href="#" onclick="filterAndGo('professional')">Pro Props</a></li>
+        <li><a href="#" onclick="filterAndGo('beginner')">Beginner Kits</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#" onclick="showPage('about')">About Us</a></li>
+        <li><a href="#" onclick="showPage('learn')">Learn Magic</a></li>
+        <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+        <li><a href="#" onclick="showPage('faq')">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">Returns Policy</a></li>
+        <li><a href="#">Track My Order</a></li>
+        <li><a href="#">Wholesale</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 KEGIC. All rights reserved.</div>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Secure Payments</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ---- DATA ----
+const products = [
+  { id:'marked-cards', name:'Premium Marked Playing Cards', cat:'marked', price:'$34.99', oldPrice:'$49.99', emoji:'♠', badge:'Best Seller', badgeType:'gold', diff:1, diffLabel:'Beginner Friendly' },
+  { id:'rising-card', name:'Rising Card Gimmick', cat:'card', price:'$39.99', emoji:'🃏', badge:'New', badgeType:'', diff:2, diffLabel:'Intermediate' },
+  { id:'invisible-thread', name:'Invisible Thread Reel Pro', cat:'accessories', price:'$24.99', emoji:'🧵', diff:2, diffLabel:'Intermediate' },
+  { id:'pro-coins', name:'Pro Manipulation Coin Set', cat:'professional', price:'$49.99', emoji:'🪙', badge:'Pro Pick', badgeType:'', diff:3, diffLabel:'Advanced' },
+  { id:'starter-kit', name:'Complete Beginner Magic Kit', cat:'beginner', price:'$59.99', oldPrice:'$89.99', emoji:'🎩', badge:'Sale', badgeType:'', diff:1, diffLabel:'Beginner Friendly' },
+  { id:'svengali', name:'Svengali Deck — Classic', cat:'card', price:'$19.99', emoji:'🎴', diff:1, diffLabel:'Beginner Friendly' },
+  { id:'gimmick-pen', name:'Pen Through Bill Gimmick', cat:'professional', price:'$29.99', emoji:'🖊', diff:2, diffLabel:'Intermediate' },
+  { id:'cups-balls', name:'Chrome Cups & Balls Set', cat:'professional', price:'$79.99', emoji:'🥤', diff:3, diffLabel:'Advanced' },
+  { id:'flash-paper', name:'Flash Paper — Pro Pack', cat:'accessories', price:'$14.99', emoji:'📄', diff:2, diffLabel:'Intermediate' },
+  { id:'dove-pan', name:'Appearing Dove Pan', cat:'professional', price:'$129.99', emoji:'🕊', badge:'Pro Only', badgeType:'', diff:4, diffLabel:'Expert' },
+  { id:'stripper-deck', name:'Stripper Deck — Red Back', cat:'card', price:'$22.99', emoji:'🃏', diff:1, diffLabel:'Beginner Friendly' },
+  { id:'linking-rings', name:'Linking Rings — 8 Ring Set', cat:'professional', price:'$89.99', emoji:'⭕', diff:3, diffLabel:'Advanced' },
+  { id:'learn-cards', name:'Card Magic Starter Guide', cat:'beginner', price:'$9.99', emoji:'📚', diff:1, diffLabel:'Beginner Friendly' },
+  { id:'thumb-tip', name:'Thumb Tip — Flesh Tone', cat:'accessories', price:'$7.99', emoji:'👍', diff:1, diffLabel:'Beginner Friendly' },
+  { id:'sponge-balls', name:'Professional Sponge Ball Set', cat:'beginner', price:'$12.99', emoji:'🔴', diff:1, diffLabel:'Beginner Friendly' },
+  { id:'coin-gimmick', name:'Expanded Shell Coin', cat:'professional', price:'$44.99', emoji:'🪙', diff:3, diffLabel:'Advanced' },
+  { id:'wand', name:'Classic Magic Wand — Pro', cat:'accessories', price:'$34.99', emoji:'🪄', diff:1, diffLabel:'All Levels' },
+  { id:'memorized-deck', name:'Memorized Deck Training System', cat:'card', price:'$27.99', emoji:'🧠', diff:4, diffLabel:'Expert' },
+];
+
+const faqData = [
+  { q: 'Are your marked cards detectable by non-magicians?', a: 'Our proprietary micro-print system is invisible to untrained eyes under all common lighting conditions — stage lights, UV, flash photography, and natural light. Thousands of professional magicians have used our decks in high-scrutiny environments without detection.' },
+  { q: 'What is your return policy?', a: 'We offer a 30-day satisfaction guarantee on all products. If you\'re not fully satisfied, contact support@kegic.com for a hassle-free return. Please note that products must be unused and in original packaging.' },
+  { q: 'Do you offer wholesale pricing for magic shops?', a: 'Yes! We partner with magic shops and entertainment supply companies worldwide. Contact us through the wholesale inquiry form for volume pricing and minimum order information.' },
+  { q: 'Are your beginner products suitable for children?', a: 'Our Beginner Magic Kit and most beginner products are suitable for ages 10 and up. Products marked "Pro Only" or "Advanced" may involve materials not suitable for younger performers.' },
+  { q: 'How long does shipping take?', a: 'Orders ship within 1–2 business days. Standard domestic shipping takes 3–5 business days. Express (1–2 days) and international options are available at checkout. Free shipping on orders over $75.' },
+  { q: 'Are secrets protected? I\'m worried about the exposure of methods.', a: 'All our products are sold exclusively to verified buyers. We do not publish method explanations publicly. Digital instructions use download links that expire after 3 downloads and are tied to your account.' },
+  { q: 'Do you offer video tutorials with purchases?', a: 'Most products include access to a private tutorial video. You\'ll receive a link in your order confirmation email. Subscriber members in our Inner Circle get access to our full video library.' },
+];
+
+// ---- CART STATE ----
+let cart = [];
+
+function getCartTotal() {
+  return cart.reduce((sum, item) => {
+    const price = parseFloat(item.price.replace('$','')) * item.qty;
+    return sum + price;
+  }, 0);
+}
+
+function renderCart() {
+  const el = document.getElementById('cartItems');
+  if (cart.length === 0) {
+    el.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--muted)">
+      <div style="font-size:48px;margin-bottom:16px">🎩</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;margin-bottom:8px">Your cart is empty</div>
+      <div style="font-size:12px">Add some magic to get started</div>
+    </div>`;
+  } else {
+    el.innerHTML = cart.map((item,i) => `
+      <div class="cart-item">
+        <div class="cart-item-img">${item.emoji}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">${item.price}</div>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  document.getElementById('cartTotal').textContent = '$' + getCartTotal().toFixed(2);
+  document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
+}
+
+function changeQty(i, delta) {
+  cart[i].qty += delta;
+  if (cart[i].qty <= 0) cart.splice(i, 1);
+  renderCart();
+}
+
+function addToCart(name, price, emoji) {
+  const existing = cart.find(i => i.name === name);
+  if (existing) { existing.qty++; }
+  else { cart.push({ name, price, emoji, qty: 1 }); }
+  renderCart();
+  openCart();
+}
+
+function openCart() {
+  document.getElementById('cartSidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('active');
+}
+function closeCart() {
+  document.getElementById('cartSidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('active');
+}
+
+// ---- PAGES ----
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) {
+    el.classList.add('active');
+    el.classList.add('page-enter');
+    setTimeout(() => el.classList.remove('page-enter'), 600);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showProductDetail(id) {
+  showPage('product');
+}
+
+function filterAndGo(cat) {
+  showPage('shop');
+  setTimeout(() => filterProducts(cat, document.querySelector(`.filter-tag[onclick*="'${cat}'"]`)), 100);
+}
+
+// ---- PRODUCTS ----
+function renderProductCard(p, onclick = '') {
+  const diffDots = Array.from({length:5}, (_,i) => `<div class="diff-dot${i < p.diff ? ' filled' : ''}"></div>`).join('');
+  const badgeHtml = p.badge ? `<div class="product-badge ${p.badgeType}">${p.badge}</div>` : '';
+  const oldPriceHtml = p.oldPrice ? `<span class="old">${p.oldPrice}</span>` : '';
+  return `
+    <div class="product-card" onclick="${onclick || `addToCart('${p.name}','${p.price}','${p.emoji}')`}">
+      ${badgeHtml}
+      <div class="product-img">
+        <div class="product-img-inner prod-art" style="background:radial-gradient(ellipse at center,rgba(139,26,26,0.15),#080808)">
+          <div style="font-size:90px;z-index:1;position:relative;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.8))">${p.emoji}</div>
+        </div>
+      </div>
+      <div class="add-cart-overlay">
+        <button class="btn-primary" style="font-size:10px;" onclick="event.stopPropagation();addToCart('${p.name}','${p.price}','${p.emoji}')">Add to Cart</button>
+      </div>
+      <div class="product-info">
+        <div class="product-category">${p.cat.charAt(0).toUpperCase()+p.cat.slice(1)} Magic</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-bottom">
+          <div class="product-price">${oldPriceHtml}${p.price}</div>
+          <div class="product-diff">
+            <div class="diff-dots">${diffDots}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderFeatured() {
+  const grid = document.getElementById('featuredGrid');
+  if (grid) grid.innerHTML = products.slice(0, 8).map(p => renderProductCard(p, p.id === 'marked-cards' ? "showProductDetail('marked-cards')" : '')).join('');
+}
+
+let activeFilter = 'all';
+function renderShop(filter='all') {
+  const grid = document.getElementById('shopGrid');
+  const filtered = filter === 'all' ? products : products.filter(p => p.cat === filter);
+  if (grid) grid.innerHTML = filtered.map(p => renderProductCard(p, p.id === 'marked-cards' ? "showProductDetail('marked-cards')" : '')).join('');
+  const count = document.getElementById('shopCount');
+  if (count) count.textContent = filtered.length + ' product' + (filtered.length !== 1 ? 's' : '');
+}
+
+function filterProducts(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderShop(cat);
+}
+
+// ---- FAQ ----
+function renderFAQ() {
+  const el = document.getElementById('faqList');
+  if (!el) return;
+  el.innerHTML = faqData.map((f,i) => `
+    <div class="faq-item" id="faq-${i}">
+      <button class="faq-q" onclick="toggleFaq(${i})">
+        <span>${f.q}</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">${f.a}</div>
+    </div>
+  `).join('');
+}
+
+function toggleFaq(i) {
+  const item = document.getElementById('faq-' + i);
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(fi => fi.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ---- MARQUEE ----
+function renderMarquee() {
+  const items = ['Premium Marked Cards','Invisible Gimmicks','Stage-Tested Props','Free Shipping $75+','Card Magic Essentials','Pro Coin Sets','Secure Checkout','New Arrivals Weekly'];
+  const track = document.getElementById('marqueeTrack');
+  if (!track) return;
+  const html = [...items,...items].map(t => `
+    <div class="marquee-item"><div class="marquee-dot"></div>${t}</div>
+  `).join('');
+  track.innerHTML = html;
+}
+
+// ---- PARTICLES ----
+function createParticles() {
+  const container = document.getElementById('particles');
+  if (!container) return;
+  for (let i=0; i<25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random()*100 + '%';
+    p.style.width = p.style.height = (Math.random()*2+1) + 'px';
+    p.style.animationDuration = (Math.random()*15+8) + 's';
+    p.style.animationDelay = (Math.random()*10) + 's';
+    container.appendChild(p);
+  }
+}
+
+// ---- TOAST ----
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function handleEmailSignup() {
+  const val = document.getElementById('emailInput')?.value;
+  if (val && val.includes('@')) {
+    showToast('✦ Welcome to the Inner Circle!');
+    document.getElementById('emailInput').value = '';
+  } else {
+    showToast('Please enter a valid email address.');
+  }
+}
+
+// ---- CURSOR ----
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+function animCursor() {
+  cursorDot.style.left = mx+'px'; cursorDot.style.top = my+'px';
+  rx += (mx-rx)*0.15; ry += (my-ry)*0.15;
+  cursorRing.style.left = rx+'px'; cursorRing.style.top = ry+'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+// ---- SCROLL NAV ----
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('mainNav');
+  if (window.scrollY > 60) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
+// ---- INIT ----
+renderFeatured();
+renderShop();
+renderFAQ();
+renderMarquee();
+createParticles();
+</script>
+</body>
+</html>
