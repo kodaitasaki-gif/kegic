@@ -35,8 +35,35 @@
     font-family: 'Barlow', sans-serif;
     font-weight: 300;
     overflow-x: hidden;
+    cursor: none;
   }
 
+  /* CUSTOM CURSOR */
+  .cursor { display: contents; }
+  .cursor-dot {
+    position: fixed; top:0; left:0;
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    will-change: left, top;
+  }
+  .cursor-ring {
+    position: fixed; top:0; left:0;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,0.5);
+    border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    will-change: left, top;
+  }
+  .cursor-ring.hovering {
+    width: 52px; height: 52px;
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.05);
+  }
 
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 3px; }
@@ -91,6 +118,7 @@
     color: var(--white); padding: 10px 20px;
     font-family: 'Barlow', sans-serif;
     font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    cursor: none; transition: all 0.3s;
     position: relative;
   }
   .cart-btn:hover { border-color: var(--gold); color: var(--gold); }
@@ -242,7 +270,7 @@
     font-family: 'Barlow', sans-serif;
     font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
     font-weight: 500;
-     text-decoration:none;
+    cursor: none; text-decoration:none;
     display: inline-flex; align-items:center; gap:10px;
     transition: all 0.3s;
     position: relative; overflow:hidden;
@@ -262,12 +290,158 @@
     padding: 16px 40px;
     font-family: 'Barlow', sans-serif;
     font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-     text-decoration:none;
+    cursor: none; text-decoration:none;
     display: inline-flex; align-items:center; gap:10px;
     transition: all 0.3s;
   }
   .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
   @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ===== SCROLL REVEAL ===== */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.revealed { opacity: 1; transform: translateY(0); }
+  .reveal-left { opacity: 0; transform: translateX(-50px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .reveal-left.revealed { opacity: 1; transform: translateX(0); }
+  .reveal-right { opacity: 0; transform: translateX(50px); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .reveal-right.revealed { opacity: 1; transform: translateX(0); }
+  .reveal-scale { opacity: 0; transform: scale(0.88); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.34,1.56,0.64,1); }
+  .reveal-scale.revealed { opacity: 1; transform: scale(1); }
+  .delay-1 { transition-delay: 0.1s !important; }
+  .delay-2 { transition-delay: 0.2s !important; }
+  .delay-3 { transition-delay: 0.3s !important; }
+  .delay-4 { transition-delay: 0.4s !important; }
+  .delay-5 { transition-delay: 0.5s !important; }
+
+  /* ===== GLITCH TEXT ===== */
+  .glitch { position: relative; display: inline-block; }
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    font-family: inherit; font-size: inherit; font-weight: inherit;
+    letter-spacing: inherit; line-height: inherit;
+  }
+  .glitch::before {
+    color: var(--red-bright);
+    clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+    animation: glitch-top 5s infinite linear; opacity: 0;
+  }
+  .glitch::after {
+    color: var(--gold);
+    clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+    animation: glitch-bot 5s infinite linear; opacity: 0;
+  }
+  @keyframes glitch-top {
+    0%,89%,100%{transform:translate(0);opacity:0}
+    90%{transform:translate(-3px,-1px);opacity:0.8}
+    92%{transform:translate(3px,1px);opacity:0.8}
+    94%{transform:translate(-2px,0);opacity:0.8}
+    96%{transform:translate(2px,-1px);opacity:0.8}
+    98%{transform:translate(0);opacity:0}
+  }
+  @keyframes glitch-bot {
+    0%,87%,100%{transform:translate(0);opacity:0}
+    88%{transform:translate(3px,1px);opacity:0.6}
+    90%{transform:translate(-3px,0);opacity:0.6}
+    92%{transform:translate(2px,1px);opacity:0.6}
+    94%{transform:translate(-1px,0);opacity:0.6}
+    96%{transform:translate(0);opacity:0}
+  }
+
+  /* ===== SHIMMER ON PRODUCT CARDS ===== */
+  .product-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(201,168,76,0.07) 50%, transparent 60%);
+    transform: translateX(-100%); pointer-events: none; z-index: 10;
+  }
+  .product-card:hover::after { transform: translateX(100%); transition: transform 0.6s ease; }
+
+  /* ===== SPOTLIGHT ON HERO ===== */
+  .hero-spotlight {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(500px circle at var(--mx,50%) var(--my,50%), rgba(201,168,76,0.035), transparent 40%);
+  }
+
+  /* ===== STAGGER PRODUCT CARDS ===== */
+  .product-card {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
+  }
+  .product-card.card-visible { opacity: 1; transform: translateY(0); }
+  .product-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.12); }
+
+  /* ===== MARQUEE PAUSE ===== */
+  .marquee-bar:hover .marquee-track { animation-play-state: paused; }
+  .marquee-item { transition: color 0.3s; cursor: default; }
+  .marquee-item:hover { color: var(--gold-light); }
+
+  /* ===== BS HOVER GLOW ===== */
+  .bs-featured, .bs-item { transition: box-shadow 0.4s; }
+  .bs-featured:hover { box-shadow: 0 0 60px rgba(139,26,26,0.25), inset 0 0 0 1px rgba(201,168,76,0.15); }
+  .bs-item:hover { box-shadow: 0 0 40px rgba(139,26,26,0.2), inset 0 0 0 1px rgba(201,168,76,0.1); }
+
+  /* ===== NOISE TEXTURE ===== */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9000;
+    opacity: 0.02;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 160px; background-repeat: repeat;
+  }
+
+  /* ===== SCROLL PROGRESS BAR ===== */
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; height: 2px; z-index: 9998;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    width: 0%; pointer-events: none;
+    transition: width 0.08s linear;
+  }
+
+  /* ===== REVIEW CARD HOVER ===== */
+  .review-card { transition: border-color 0.3s, transform 0.3s; }
+  .review-card:hover { border-color: rgba(201,168,76,0.3); transform: translateX(5px); }
+
+  /* ===== ARTICLE CARD HOVER ===== */
+  .article-card { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s; }
+  .article-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+
+  /* ===== GLOWING STORY CIRCLE ===== */
+  @keyframes borderGlow { 0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0)} 50%{box-shadow:0 0 30px 4px rgba(201,168,76,0.1)} }
+  .story-circle { animation: borderGlow 4s ease-in-out infinite; }
+
+  /* ===== GOLD LINE DRAW ===== */
+  .line-draw { position: relative; }
+  .line-draw::after {
+    content: ''; position: absolute; bottom: -2px; left: 0;
+    width: 100%; height: 1px; background: var(--gold);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 1.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .line-draw.revealed::after { transform: scaleX(1); }
+
+  /* ===== STAT COUNT ANIMATION ===== */
+  .stat-num { transition: color 0.3s; will-change: contents; }
+
+  /* ===== HERO BG PULSE ===== */
+  @keyframes bgPulse {
+    0%,100%{opacity:1} 50%{opacity:0.7}
+  }
+  .hero-bg { animation: bgPulse 8s ease-in-out infinite; }
+
+  /* ===== CARD DEAL ANIMATION ===== */
+  @keyframes dealIn {
+    from{opacity:0;transform:translateY(-60px) rotate(var(--rot,0deg)) scale(0.8)}
+    to{opacity:1;transform:translateY(0) rotate(var(--rot,0deg)) scale(1)}
+  }
+  .playing-card:nth-child(1) { --rot:-15deg; animation: dealIn 0.6s 0.2s cubic-bezier(0.34,1.56,0.64,1) both, card1 6s 0.8s ease-in-out infinite; }
+  .playing-card:nth-child(2) { --rot:-5deg;  animation: dealIn 0.6s 0.4s cubic-bezier(0.34,1.56,0.64,1) both, card2 6s 1s ease-in-out infinite; }
+  .playing-card:nth-child(3) { --rot:10deg;  animation: dealIn 0.6s 0.6s cubic-bezier(0.34,1.56,0.64,1) both, card3 6s 1.2s ease-in-out infinite; }
+
+  /* ===== TILT CARD ON MOUSE ===== */
+  .hero-card-visual { perspective: 1000px; }
+  .card-stack { transform-style: preserve-3d; transition: transform 0.1s; }
 
   .hero-scroll {
     position:absolute; bottom:40px; left:60px;
@@ -334,7 +508,7 @@
   .product-card {
     background: var(--card);
     position:relative; overflow:hidden;
-    
+    cursor: none;
     transition: transform 0.4s;
   }
   .product-card:hover { z-index:2; }
@@ -475,12 +649,12 @@
   .bs-featured {
     grid-row: span 2;
     background:var(--card); position:relative; overflow:hidden;
-     min-height:600px;
+    cursor:none; min-height:600px;
     display:flex; flex-direction:column; justify-content:flex-end;
   }
   .bs-item {
     background:var(--card); position:relative; overflow:hidden;
-     min-height:290px;
+    cursor:none; min-height:290px;
     display:flex; flex-direction:column; justify-content:flex-end;
   }
   .bs-bg {
@@ -623,7 +797,7 @@
     border:none; padding:16px 28px;
     font-family:'Barlow',sans-serif; font-size:11px;
     letter-spacing:0.2em; text-transform:uppercase; font-weight:500;
-     transition:background 0.3s;
+    cursor:none; transition:background 0.3s;
   }
   .email-submit:hover { background:var(--red-bright); }
   .email-perks {
@@ -661,7 +835,7 @@
     width:80px; height:100px; background:var(--card);
     border:1px solid var(--border); flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
-    font-size:28px;  transition:border-color 0.3s;
+    font-size:28px; cursor:none; transition:border-color 0.3s;
   }
   .pd-thumb.active, .pd-thumb:hover { border-color:var(--gold); }
   .pd-info .section-label { margin-bottom:24px; }
@@ -708,7 +882,7 @@
     border:1px solid var(--border); aspect-ratio:16/9;
     display:flex; align-items:center; justify-content:center;
     flex-direction:column; gap:12px;
-     transition:border-color 0.3s;
+    cursor:none; transition:border-color 0.3s;
     position:relative; overflow:hidden;
   }
   .pd-video:hover { border-color:var(--red); }
@@ -735,7 +909,7 @@
     background:var(--red); color:var(--white);
     border:none; font-family:'Barlow',sans-serif;
     font-size:12px; letter-spacing:0.25em; text-transform:uppercase; font-weight:500;
-     transition:all 0.3s; margin-bottom:16px;
+    cursor:none; transition:all 0.3s; margin-bottom:16px;
   }
   .pd-add:hover { background:var(--red-bright); box-shadow:0 8px 30px var(--red-glow); }
   .pd-wishlist {
@@ -744,7 +918,7 @@
     border:1px solid var(--border);
     font-family:'Barlow',sans-serif;
     font-size:12px; letter-spacing:0.25em; text-transform:uppercase;
-     transition:all 0.3s;
+    cursor:none; transition:all 0.3s;
   }
   .pd-wishlist:hover { border-color:var(--gold); color:var(--gold); }
   .pd-reviews { margin-top:60px; }
@@ -773,7 +947,7 @@
   .filter-tag {
     padding:8px 20px; border:1px solid var(--border);
     font-size:11px; letter-spacing:0.15em; text-transform:uppercase;
-    color:var(--muted); background:none; 
+    color:var(--muted); background:none; cursor:none;
     transition:all 0.3s;
   }
   .filter-tag.active, .filter-tag:hover {
@@ -821,7 +995,7 @@
     display:grid; grid-template-columns:repeat(3,1fr); gap:2px;
   }
   .article-card {
-    background:var(--card); overflow:hidden; 
+    background:var(--card); overflow:hidden; cursor:none;
   }
   .article-img {
     aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
@@ -850,7 +1024,7 @@
     color:var(--white); padding:24px 0;
     font-family:'Barlow',sans-serif; font-size:16px; font-weight:400;
     display:flex; align-items:center; justify-content:space-between;
-     gap:16px;
+    cursor:none; gap:16px;
   }
   .faq-icon { color:var(--gold); font-size:20px; flex-shrink:0; transition:transform 0.3s; }
   .faq-item.open .faq-icon { transform:rotate(45deg); }
@@ -878,7 +1052,7 @@
   }
   .cart-close {
     background:none; border:none; color:var(--muted);
-    font-size:24px;  transition:color 0.3s;
+    font-size:24px; cursor:none; transition:color 0.3s;
   }
   .cart-close:hover { color:var(--white); }
   .cart-items { flex:1; overflow-y:auto; padding:24px; }
@@ -897,7 +1071,7 @@
   .cart-item-qty { display:flex; align-items:center; gap:12px; margin-top:10px; }
   .qty-btn {
     width:28px; height:28px; background:var(--border); border:none;
-    color:var(--white); font-size:16px;  transition:background 0.2s;
+    color:var(--white); font-size:16px; cursor:none; transition:background 0.2s;
     display:flex; align-items:center; justify-content:center;
   }
   .qty-btn:hover { background:var(--red); }
@@ -915,7 +1089,7 @@
     width:100%; padding:18px; background:var(--red); color:var(--white);
     border:none; font-family:'Barlow',sans-serif;
     font-size:12px; letter-spacing:0.25em; text-transform:uppercase; font-weight:500;
-     transition:all 0.3s; margin-bottom:12px;
+    cursor:none; transition:all 0.3s; margin-bottom:12px;
   }
   .checkout-btn:hover { background:var(--red-bright); box-shadow:0 8px 30px var(--red-glow); }
 
@@ -1033,6 +1207,9 @@
 </head>
 <body>
 
+<!-- SCROLL PROGRESS -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
 <!-- CUSTOM CURSOR -->
 <div class="cursor" id="cursor">
   <div class="cursor-dot" id="cursorDot"></div>
@@ -1093,6 +1270,7 @@
   <section class="hero" style="padding:0;">
     <div class="hero-bg"></div>
     <div class="hero-grid"></div>
+    <div class="hero-spotlight" id="heroSpotlight"></div>
     <div class="hero-particles" id="particles"></div>
 
     <!-- Card Visual -->
@@ -1121,7 +1299,7 @@
     <div class="hero-content">
       <div class="hero-eyebrow">Premium Magic Since 2019</div>
       <h1 class="hero-title">
-        DECEPTION<br>
+        <span class="glitch" data-text="DECEPTION">DECEPTION</span><br>
         <span class="line2">Perfected.</span>
       </h1>
       <p class="hero-sub">Professional-grade magic tools engineered for those who refuse to be ordinary. From invisible marked decks to handcrafted gimmicks — we arm the impossible.</p>
@@ -1145,15 +1323,15 @@
 
   <!-- FEATURED PRODUCTS -->
   <section class="featured">
-    <div class="section-label">Featured Collection</div>
-    <h2 class="section-title">Master Your <em>Craft</em></h2>
+    <div class="section-label reveal">Featured Collection</div>
+    <h2 class="section-title reveal delay-1">Master Your <em>Craft</em></h2>
     <div class="product-grid" id="featuredGrid"></div>
   </section>
 
   <!-- BESTSELLERS -->
   <section class="bestsellers">
-    <div class="section-label">Best Sellers</div>
-    <h2 class="section-title">The <em>Essentials</em></h2>
+    <div class="section-label reveal">Best Sellers</div>
+    <h2 class="section-title reveal delay-1">The <em>Essentials</em></h2>
     <div class="bs-grid">
       <div class="bs-featured" onclick="showProductDetail('marked-cards')">
         <div class="bs-bg bs-bg-1">
@@ -1203,13 +1381,13 @@
 
   <!-- BRAND STORY -->
   <section class="brand-story">
-    <div class="story-visual">
+    <div class="story-visual reveal-left">
       <div class="story-circle">
         <div class="story-inner">🎩</div>
       </div>
       <div class="story-number">K</div>
     </div>
-    <div class="story-text">
+    <div class="story-text reveal-right">
       <div class="section-label">Our Story</div>
       <h2 class="section-title" style="margin-bottom:24px">Built By <em>Magicians</em></h2>
       <p>
@@ -1529,7 +1707,7 @@
           <div class="contact-icon">✉</div>
           <div>
             <div class="contact-info-label">Email</div>
-            <div class="contact-info-val">support@kegic.com</div>
+            <div class="contact-info-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6d1e181d1d021f192d06080a040e430e0200">[email&#160;protected]</a></div>
           </div>
         </div>
         <div class="contact-info-item">
@@ -1612,3 +1790,5 @@
     </div>
   </div>
 </footer>
+</body>
+</html>
