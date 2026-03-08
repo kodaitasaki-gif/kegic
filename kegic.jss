@@ -1,4 +1,5 @@
-<script>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ---- DATA ----
 const products = [
   { id:'marked-cards', name:'Premium Marked Playing Cards', cat:'marked', price:'$34.99', oldPrice:'$49.99', emoji:'♠', badge:'Best Seller', badgeType:'gold', diff:1, diffLabel:'Beginner Friendly' },
@@ -230,16 +231,175 @@ function handleEmailSignup() {
   }
 }
 
+// ---- CURSOR ----
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+let mx = window.innerWidth/2, my = window.innerHeight/2;
+let rx = mx, ry = my;
+let cursorVisible = false;
 
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  if (!cursorVisible) {
+    cursorVisible = true;
+    cursorDot.style.opacity = '1';
+    cursorRing.style.opacity = '1';
+  }
+});
 
+document.addEventListener('mouseleave', () => {
+  cursorDot.style.opacity = '0';
+  cursorRing.style.opacity = '0';
+});
+
+// Handle hover state via JS instead of :has() for broader compatibility
+document.addEventListener('mouseover', e => {
+  if (e.target.closest('a, button')) cursorRing.classList.add('hovering');
+});
+document.addEventListener('mouseout', e => {
+  if (e.target.closest('a, button')) cursorRing.classList.remove('hovering');
+});
+
+cursorDot.style.opacity = '0';
+cursorRing.style.opacity = '0';
+
+function animCursor() {
+  cursorDot.style.left = mx + 'px';
+  cursorDot.style.top  = my + 'px';
+  rx += (mx - rx) * 0.15;
+  ry += (my - ry) * 0.15;
+  cursorRing.style.left = rx + 'px';
+  cursorRing.style.top  = ry + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
 
 // ---- SCROLL NAV ----
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('mainNav');
-// ---- INIT ----
+   if (window.scrollY > 60) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
 renderFeatured();
 renderShop();
 renderFAQ();
 renderMarquee();
 createParticles();
-</script>
+
+// ---- SCROLL PROGRESS ----
+const progressBar = document.getElementById('scrollProgress');
+function updateProgress() {
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = total > 0 ? (window.scrollY / total) * 100 : 0;
+  if (progressBar) progressBar.style.width = pct + '%';
+}
+
+// ---- SCROLL REVEAL ----
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+function initReveal() {
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .line-draw').forEach(el => revealObserver.observe(el));
+}
+
+// ---- STAGGER PRODUCT CARDS ----
+function staggerCards() {
+  const cards = document.querySelectorAll('.product-card');
+  cards.forEach((card, i) => { card.style.transitionDelay = (i % 4) * 0.09 + 's'; });
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('card-visible'); cardObserver.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  cards.forEach(c => cardObserver.observe(c));
+}
+
+// ---- HERO SPOTLIGHT ----
+const heroEl = document.querySelector('.hero');
+const spotlight = document.getElementById('heroSpotlight');
+if (heroEl && spotlight) {
+  heroEl.addEventListener('mousemove', e => {
+    const rect = heroEl.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1) + '%';
+    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1) + '%';
+    spotlight.style.background = `radial-gradient(500px circle at ${x} ${y}, rgba(201,168,76,0.05), transparent 40%)`;
+  });
+}
+
+// ---- HERO GRID PARALLAX ----
+const heroGrid = document.querySelector('.hero-grid');
+window.addEventListener('scroll', () => {
+  updateProgress();
+  if (heroGrid) heroGrid.style.transform = `translateY(${window.scrollY * 0.25}px)`;
+});
+
+// ---- CARD STACK TILT ----
+const cardStack = document.querySelector('.card-stack');
+const heroCardVisual = document.querySelector('.hero-card-visual');
+if (heroCardVisual && cardStack) {
+  heroCardVisual.addEventListener('mousemove', e => {
+    const rect = heroCardVisual.getBoundingClientRect();
+    const rx = ((e.clientY - rect.top - rect.height/2) / rect.height) * -12;
+    const ry = ((e.clientX - rect.left - rect.width/2) / rect.width) * 14;
+    cardStack.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    cardStack.style.transition = 'transform 0.1s';
+  });
+  heroCardVisual.addEventListener('mouseleave', () => {
+    cardStack.style.transform = 'rotateX(0) rotateY(0)';
+    cardStack.style.transition = 'transform 0.7s cubic-bezier(0.34,1.56,0.64,1)';
+  });
+}
+
+// ---- STAT COUNTER ----
+function animateCounter(el, target, suffix, duration) {
+  const start = performance.now();
+  function update(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(eased * target).toLocaleString() + suffix;
+    if (p < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+const statsEl = document.querySelector('.story-stats');
+if (statsEl) {
+  new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const nums = e.target.querySelectorAll('.stat-num');
+        const targets = [[40000,'K+',1800],[180,'+',1400],[6,' YRS',800]];
+        nums.forEach((num, i) => { if(targets[i]) animateCounter(num, targets[i][0], targets[i][1], targets[i][2]); });
+      }
+    });
+  }, { threshold: 0.5 }).observe(statsEl);
+}
+
+// ---- MAGNETIC BUTTONS ----
+function initMagnetic() {
+  document.querySelectorAll('.btn-primary, .btn-ghost, .cart-btn').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const rect = btn.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width/2) * 0.18;
+      const y = (e.clientY - rect.top - rect.height/2) * 0.18;
+      btn.style.transform = `translate(${x}px,${y}px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+      btn.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+      setTimeout(() => { btn.style.transition = ''; }, 500);
+    });
+  });
+}
+
+const _origShowPage = showPage;
+window.showPage = function(page) {
+  _origShowPage(page);
+  setTimeout(() => { initReveal(); staggerCards(); initMagnetic(); }, 60);
+};
+
+initReveal();
+staggerCards();
+initMagnetic();
+updateProgress();
+
+</script
