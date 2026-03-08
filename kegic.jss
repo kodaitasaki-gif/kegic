@@ -1,5 +1,4 @@
-
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+document.documentElement.classList.add("js-ready");
 // ---- DATA ----
 const products = [
   { id:'marked-cards', name:'Premium Marked Playing Cards', cat:'marked', price:'$34.99', oldPrice:'$49.99', emoji:'♠', badge:'Best Seller', badgeType:'gold', diff:1, diffLabel:'Beginner Friendly' },
@@ -245,7 +244,6 @@ renderMarquee();
 createParticles();
 
 // ---- SCROLL PROGRESS ----
-document.documentElement.classList.add('js-ready');
 const progressBar = document.getElementById('scrollProgress');
 function updateProgress() {
   const total = document.documentElement.scrollHeight - window.innerHeight;
@@ -359,5 +357,3 @@ initReveal();
 staggerCards();
 initMagnetic();
 updateProgress();
-
-</script>
